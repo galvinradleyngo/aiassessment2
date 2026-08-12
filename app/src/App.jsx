@@ -96,6 +96,9 @@ const App = () => {
       { task: '', usage: 'AI Expected' }
     ],
     aiLiteracySkills: [],
+    preAiSkillsDeveloped: '',
+    preAiLiteracySkills: [],
+    preAiSkillsExplanation: '',
   });
 
   const blueprintRef = useRef(null);
@@ -159,19 +162,11 @@ const App = () => {
 
   const nextStep = () => {
     if (step >= 9) return;
-    if (data.assessmentType === 'AI-Free' && step === 7) {
-      setStep(9);
-      return;
-    }
     setStep(prev => prev + 1);
   };
-  
+
   const prevStep = () => {
     if (step <= 1) return;
-    if (data.assessmentType === 'AI-Free' && step === 9) {
-      setStep(7);
-      return;
-    }
     setStep(prev => prev - 1);
   };
 
@@ -190,13 +185,6 @@ const App = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [step, data]);
-
-  // AI-Free workflow does not use Step 8.
-  useEffect(() => {
-    if (data.assessmentType === 'AI-Free' && step === 8) {
-      setStep(9);
-    }
-  }, [data.assessmentType, step]);
 
   // Load export libraries for image/PDF output.
   useEffect(() => {
@@ -279,6 +267,18 @@ const App = () => {
         aiLiteracySkills: isSelected
           ? prev.aiLiteracySkills.filter((id) => id !== skillId)
           : [...prev.aiLiteracySkills, skillId]
+      };
+    });
+  };
+
+  const togglePreAiLiteracySkill = (skillId) => {
+    setData((prev) => {
+      const isSelected = prev.preAiLiteracySkills.includes(skillId);
+      return {
+        ...prev,
+        preAiLiteracySkills: isSelected
+          ? prev.preAiLiteracySkills.filter((id) => id !== skillId)
+          : [...prev.preAiLiteracySkills, skillId]
       };
     });
   };
@@ -694,6 +694,76 @@ const App = () => {
           </div>
         );
       case 8:
+        if (data.assessmentType === 'AI-Free') {
+          return (
+            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-rose-600 uppercase tracking-widest">Step 8: Pre-AI Skills</label>
+                <h3 className="text-2xl font-bold text-gray-900">Are there Pre-AI skills that might be developed in this assessment?</h3>
+                <p className="text-sm text-gray-500">Pre-AI skills are foundational human competencies (e.g., critical thinking, reasoning) that can transfer into AI literacy skills.</p>
+              </div>
+
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  onClick={() => updateData('preAiSkillsDeveloped', 'yes')}
+                  className={`flex-1 p-5 rounded-2xl border-2 text-center font-bold transition-all ${data.preAiSkillsDeveloped === 'yes' ? 'border-rose-600 bg-rose-50 text-rose-700 shadow-md shadow-rose-100' : 'border-gray-100 bg-white text-gray-500 hover:border-rose-200'}`}
+                >
+                  Yes
+                </button>
+                <button
+                  type="button"
+                  onClick={() => updateData('preAiSkillsDeveloped', 'no')}
+                  className={`flex-1 p-5 rounded-2xl border-2 text-center font-bold transition-all ${data.preAiSkillsDeveloped === 'no' ? 'border-rose-600 bg-rose-50 text-rose-700 shadow-md shadow-rose-100' : 'border-gray-100 bg-white text-gray-500 hover:border-rose-200'}`}
+                >
+                  No
+                </button>
+              </div>
+
+              {data.preAiSkillsDeveloped === 'yes' && (
+                <div className="space-y-6 pt-4 border-t border-gray-100 animate-in fade-in slide-in-from-top-4 duration-500">
+                  <div className="space-y-2">
+                    <p className="text-sm font-bold text-gray-700">Which AI literacy skills do you think this assessment helps develop?</p>
+                    <p className="text-sm text-gray-500">Check all that apply.</p>
+                  </div>
+                  <div className="grid grid-cols-1 gap-3">
+                    {AI_LITERACY_SKILLS.map((skill) => {
+                      const isSelected = data.preAiLiteracySkills.includes(skill.id);
+                      return (
+                        <label
+                          key={skill.id}
+                          className={`flex items-start gap-3 rounded-2xl border p-4 cursor-pointer transition-all ${isSelected ? 'border-rose-400 bg-rose-50' : 'border-gray-200 bg-white hover:border-rose-200'}`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => togglePreAiLiteracySkill(skill.id)}
+                            className="mt-1 h-4 w-4 rounded border-gray-300 text-rose-600 focus:ring-rose-400"
+                          />
+                          <span className="space-y-1">
+                            <span className="block text-sm font-bold text-gray-900">{skill.title}</span>
+                            <span className="block text-sm text-gray-600 leading-relaxed">{skill.description}</span>
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+
+                  <div className="space-y-2 pt-2">
+                    <p className="text-sm font-bold text-gray-700">Explain what pre-AI skills are developed, and how</p>
+                    <textarea
+                      className="w-full h-28 p-3 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-rose-100"
+                      placeholder="ex. In this assessment, learners are asked to give several ways to answer the same problem- this builds critical thinking that can lead to the AI literacy skill of AI output evaluation."
+                      value={data.preAiSkillsExplanation}
+                      onChange={(e) => updateData('preAiSkillsExplanation', e.target.value)}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        }
+
         const requiresAiLiteracy = ['AI-Assisted', 'AI-Integrated'].includes(data.assessmentType);
 
         if (!requiresAiLiteracy) {
@@ -750,6 +820,7 @@ const App = () => {
         const auxiliaryTasks = data.tasks.filter((_, i) => !data.essentialTaskIndices.includes(i) && _.trim());
         const redesignedTasksForBlueprint = (data.redesignedTasks || []).filter((item) => item.task.trim());
         const selectedAiLiteracySkills = AI_LITERACY_SKILLS.filter((skill) => data.aiLiteracySkills.includes(skill.id));
+        const selectedPreAiLiteracySkills = AI_LITERACY_SKILLS.filter((skill) => data.preAiLiteracySkills.includes(skill.id));
         
         const getPolicyText = () => {
           if (data.assessmentType === 'AI-Free') {
@@ -878,6 +949,38 @@ const App = () => {
                     )}
                   </div>
                 )}
+
+                {data.assessmentType === 'AI-Free' && (
+                  <div className={`p-5 rounded-2xl border-2 ${theme.border} bg-white`}>
+                    <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Pre-AI Skills Developed</p>
+                    {data.preAiSkillsDeveloped === 'yes' ? (
+                      <div className="space-y-4">
+                        {selectedPreAiLiteracySkills.length > 0 ? (
+                          <ul className="space-y-2">
+                            {selectedPreAiLiteracySkills.map((skill) => (
+                              <li key={skill.id} className="text-sm text-gray-700 leading-relaxed flex gap-2">
+                                <CheckCircle2 className={`w-3 h-3 mt-1 flex-shrink-0 ${theme.text}`} />
+                                <span>
+                                  <span className="font-semibold">{skill.title}:</span> {skill.description}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-sm text-gray-500 italic">No AI literacy skills selected.</p>
+                        )}
+                        {data.preAiSkillsExplanation?.trim() && (
+                          <div>
+                            <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-1">Explanation</p>
+                            <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{data.preAiSkillsExplanation}</p>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-500 italic">No pre-AI skills identified for this assessment.</p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -947,15 +1050,16 @@ const App = () => {
   );
   };
 
-  const isAiFreeWorkflow = data.assessmentType === 'AI-Free';
-  const totalSteps = isAiFreeWorkflow ? 8 : 9;
-  const progressStep = isAiFreeWorkflow && step === 9 ? 8 : step;
-  const isFinalInputStep = isAiFreeWorkflow ? step === 7 : step === 8;
+  const totalSteps = 9;
+  const progressStep = step;
+  const isFinalInputStep = step === 8;
   const isNextDisabled =
     (step === 5 && !data.assessmentType) ||
     (step === 6 && !data.humanCompetencyStrategy && data.assessmentType === 'AI-Free') ||
     (step === 6 && data.assessmentType === 'AI-Integrated' && !data.integratedSubtype) ||
-    (step === 8 && ['AI-Assisted', 'AI-Integrated'].includes(data.assessmentType) && data.aiLiteracySkills.length === 0);
+    (step === 8 && ['AI-Assisted', 'AI-Integrated'].includes(data.assessmentType) && data.aiLiteracySkills.length === 0) ||
+    (step === 8 && data.assessmentType === 'AI-Free' && !data.preAiSkillsDeveloped) ||
+    (step === 8 && data.assessmentType === 'AI-Free' && data.preAiSkillsDeveloped === 'yes' && data.preAiLiteracySkills.length === 0);
 
   return (
     <div className="min-h-screen bg-[#FBFBFD] text-[#1D1D1F] font-sans flex flex-col">
@@ -968,7 +1072,7 @@ const App = () => {
             <div className="w-8 h-8 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-100">
               <BrainCircuit className="w-5 h-5 text-white" />
             </div>
-            <span className="font-extrabold text-sm sm:text-base tracking-tight uppercase text-indigo-950 truncate">AI-RESPONSIVE STUDIO</span>
+            <span className="font-extrabold text-sm sm:text-base tracking-tight uppercase text-indigo-950 truncate">AI-Responsive Studio - BASIC ED Edition</span>
           </div>
         </div>
         <div className="h-1.5 w-24 sm:w-48 bg-gray-100 rounded-full overflow-hidden flex-shrink-0">
