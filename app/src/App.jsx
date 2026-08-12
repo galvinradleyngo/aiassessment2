@@ -452,9 +452,9 @@ const App = () => {
               </div>
               <div className="grid grid-cols-1 gap-4">
                 {[
-                  { id: 'Proctoring', title: 'Proctoring', desc: 'Students perform the assessment on-site with direct supervision.' },
-                  { id: 'Validation (Oral/Viva)', title: 'Validation (Oral/Viva)', desc: 'Students defend their work to verify authorship.' },
-                  { id: 'Documentation', title: 'Documentation', desc: 'Students submit documentary evidence of their work process.' }
+                  { id: 'Proctoring', title: 'Supervised Work', desc: 'Students perform the assessment on-site with direct supervision.' },
+                  { id: 'Validation (Oral/Viva)', title: 'Present/defend', desc: 'Students defend their work to verify authorship.' },
+                  { id: 'Documentation', title: 'Document the process', desc: 'Students submit documentary evidence of their work process.' }
                 ].map(strategy => (
                   <button 
                     key={strategy.id}
@@ -667,9 +667,9 @@ const App = () => {
                 <p className="text-sm font-bold text-gray-700">Select verification strategy:</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   {[
-                    { id: 'Proctoring', title: 'Proctoring' },
-                    { id: 'Validation (Oral/Viva)', title: 'Oral Validation' },
-                    { id: 'Documentation', title: 'Documentation' }
+                    { id: 'Proctoring', title: 'Supervised Work' },
+                    { id: 'Validation (Oral/Viva)', title: 'Present/defend' },
+                    { id: 'Documentation', title: 'Document the process' }
                   ].map(strategy => (
                     <button 
                       key={strategy.id}
