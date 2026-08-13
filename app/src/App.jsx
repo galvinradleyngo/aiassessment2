@@ -225,14 +225,35 @@ const App = () => {
     });
   };
 
+  const shareOrDownloadFile = async (blob, filename, mimeType) => {
+    const file = new File([blob], filename, { type: mimeType });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file], title: filename });
+        return;
+      } catch (err) {
+        if (err?.name === 'AbortError') return;
+        // Sharing failed for a non-cancellation reason; fall through to a direct download.
+      }
+    }
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = url;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   const downloadImage = async () => {
     const canvas = await captureBlueprintCanvas();
     if (!canvas) return;
 
-    const link = document.createElement('a');
-    link.download = `Blueprint-${data.subject || 'Assessment'}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+    if (!blob) return;
+
+    await shareOrDownloadFile(blob, `Blueprint-${data.subject || 'Assessment'}.png`, 'image/png');
   };
 
   const downloadPdf = async () => {
@@ -250,7 +271,9 @@ const App = () => {
     });
 
     pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, canvas.width, canvas.height);
-    pdf.save(`Blueprint-${data.subject || 'Assessment'}.pdf`);
+
+    const blob = pdf.output('blob');
+    await shareOrDownloadFile(blob, `Blueprint-${data.subject || 'Assessment'}.pdf`, 'application/pdf');
   };
 
   const getThemeColor = () => {
