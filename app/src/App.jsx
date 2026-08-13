@@ -1099,18 +1099,18 @@ const App = () => {
   return (
     <div className="min-h-screen bg-[#FBFBFD] text-[#1D1D1F] font-sans flex flex-col">
       <nav className="h-16 border-b border-gray-200 bg-white sticky top-0 z-50 px-3 sm:px-6 flex items-center justify-between w-full shadow-sm gap-3">
-        <div className="flex items-center gap-4">
-          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 hover:bg-gray-50 rounded-lg text-gray-400 transition-colors">
+        <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
+          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 hover:bg-gray-50 rounded-lg text-gray-400 transition-colors flex-shrink-0">
             {isSidebarOpen ? <ChevronLeft className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
           </button>
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <div className="w-8 h-8 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-100">
+            <div className="w-8 h-8 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-100 flex-shrink-0">
               <BrainCircuit className="w-5 h-5 text-white" />
             </div>
-            <span className="font-extrabold text-sm sm:text-base tracking-tight uppercase text-indigo-950 truncate">AI-Responsive Studio - BASIC ED Edition</span>
+            <span className="font-extrabold text-xs sm:text-base tracking-tight uppercase text-indigo-950 truncate">AI-Responsive Studio<span className="hidden sm:inline"> - BASIC ED Edition</span></span>
           </div>
         </div>
-        <div className="h-1.5 w-24 sm:w-48 bg-gray-100 rounded-full overflow-hidden flex-shrink-0">
+        <div className="h-1.5 w-12 sm:w-48 bg-gray-100 rounded-full overflow-hidden flex-shrink-0">
           <div className="h-full bg-indigo-600 transition-all duration-500 ease-out" style={{ width: `${(progressStep / totalSteps) * 100}%` }} />
         </div>
       </nav>
