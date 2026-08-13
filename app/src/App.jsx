@@ -34,6 +34,9 @@ import {
 const html2canvasScript = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
 const jsPdfScript = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
 
+const GRADE_LEVELS = ['Kindergarten', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7 and above'];
+const K3_GRADE_LEVELS = ['Kindergarten', 'Grade 1', 'Grade 2', 'Grade 3'];
+
 const AI_LITERACY_SKILLS = [
   {
     id: 'Understanding AI Fundamentals',
@@ -79,6 +82,7 @@ const App = () => {
   ));
   const [data, setData] = useState({
     courseName: '',
+    gradeLevel: '',
     subject: '',
     learningOutcomes: ['', ''], 
     tasks: ['', '', '', ''], 
@@ -296,16 +300,29 @@ const App = () => {
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="space-y-2">
               <label className="text-xs font-bold text-indigo-600 uppercase tracking-widest">Step 1</label>
-              <h3 className="text-2xl font-bold text-gray-900">Course Identification</h3>
-              <p className="text-sm text-gray-500">Enter the name of the course for this redesign.</p>
+              <h3 className="text-2xl font-bold text-gray-900">Course/Subject Area Identification</h3>
+              <p className="text-sm text-gray-500">Enter the name of the course/subject area for this redesign.</p>
             </div>
-            <input 
+            <input
               autoFocus
               className="w-full p-4 bg-white border border-gray-200 rounded-2xl shadow-sm outline-none focus:ring-2 focus:ring-indigo-100 transition-all"
               placeholder="e.g., Cost Accounting"
               value={data.courseName}
               onChange={(e) => updateData('courseName', e.target.value)}
             />
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-gray-700">Grade Level</label>
+              <select
+                className="w-full p-4 bg-white border border-gray-200 rounded-2xl shadow-sm outline-none focus:ring-2 focus:ring-indigo-100 transition-all text-sm"
+                value={data.gradeLevel}
+                onChange={(e) => updateData('gradeLevel', e.target.value)}
+              >
+                <option value="">Select grade level...</option>
+                {GRADE_LEVELS.map((level) => (
+                  <option key={level} value={level}>{level}</option>
+                ))}
+              </select>
+            </div>
           </div>
         );
       case 2:
@@ -331,7 +348,7 @@ const App = () => {
             <div className="space-y-2">
               <label className="text-xs font-bold text-indigo-600 uppercase tracking-widest">Step 3</label>
               <h3 className="text-2xl font-bold text-gray-900">Learning Outcomes</h3>
-              <p className="text-sm text-gray-500">List the specific CLOs this assessment provides evidence for.</p>
+              <p className="text-sm text-gray-500">List the specific CLOs/Learning Outcomes this assessment provides evidence for.</p>
             </div>
             <div className="space-y-3">
               {data.learningOutcomes.map((outcome, index) => (
@@ -391,6 +408,7 @@ const App = () => {
         );
       case 5:
         const stepFiveTasks = data.tasks.filter((task) => task.trim());
+        const isK3GradeLevel = K3_GRADE_LEVELS.includes(data.gradeLevel);
 
         return (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10">
@@ -398,6 +416,12 @@ const App = () => {
               <label className="text-xs font-bold text-indigo-600 uppercase tracking-widest">Step 5: Strategic Choice</label>
               <h3 className="text-2xl font-bold text-gray-900">Categorize the Assessment</h3>
             </div>
+
+            {isK3GradeLevel && (
+              <div className="p-4 rounded-2xl border border-rose-200 bg-rose-50 text-sm text-rose-800">
+                <strong>Note:</strong> Based on DepEd guidance, assessments for {data.gradeLevel} ought to be AI-Free.
+              </div>
+            )}
 
             <div className="bg-indigo-50/60 border border-indigo-100 rounded-2xl p-5">
               <p className="text-xs font-black uppercase tracking-widest text-indigo-600 mb-3">Tasks To Evaluate</p>
@@ -495,7 +519,7 @@ const App = () => {
                   <Search className={`w-6 h-6 ${data.integratedSubtype === 'ObjectOfStudy' ? 'text-emerald-600' : 'text-gray-400'}`} />
                   <div>
                     <h4 className="font-bold text-gray-900">AI as Object of Study</h4>
-                    <p className="text-sm text-gray-500 mt-2 leading-relaxed">AI use is prevalent in the field; CLOs require students to analyze and evaluate AI's role.</p>
+                    <p className="text-sm text-gray-500 mt-2 leading-relaxed">AI use is prevalent in the field; CLOs/Learning Outcomes require students to analyze and evaluate AI's role.</p>
                   </div>
                 </button>
                 <button
@@ -528,7 +552,7 @@ const App = () => {
             <div className="space-y-2">
               <label className="text-xs font-bold text-amber-600 uppercase tracking-widest">Step 6: Task Alignment</label>
               <h3 className="text-2xl font-bold text-gray-900">Select Core Human Tasks</h3>
-              <p className="text-sm text-gray-500">Select the tasks where students <strong>must</strong> apply the CLOs without AI assistance.</p>
+              <p className="text-sm text-gray-500">Select the tasks where students <strong>must</strong> apply the CLOs/Learning Outcomes without AI assistance.</p>
             </div>
             <div className="grid grid-cols-1 gap-3">
               {data.tasks.map((task, index) => task.trim() && (
@@ -871,7 +895,7 @@ const App = () => {
                   <div className="max-w-[70%]">
                     <p className="text-xs font-black uppercase tracking-widest opacity-80">Design Artifact</p>
                     <h4 className="text-xl font-bold leading-tight mt-1">AI-Responsive Blueprint</h4>
-                    <p className="text-sm font-bold opacity-90 mt-1">{data.courseName || 'Course'}: {data.subject || 'Assessment'}</p>
+                    <p className="text-sm font-bold opacity-90 mt-1">{data.courseName || 'Course/Subject Area'}: {data.subject || 'Assessment'}</p>
                   </div>
                   <div className="bg-white/20 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest border border-white/30 text-center">
                     {data.assessmentType}
@@ -1014,7 +1038,7 @@ const App = () => {
       <div className="space-y-6">
         <div className="space-y-4">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Course</label>
+            <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Course/Subject Area</label>
             <p className="text-sm font-bold text-gray-800 truncate">{data.courseName || '...'}</p>
           </div>
           <div className="space-y-1">
@@ -1026,7 +1050,7 @@ const App = () => {
         <div className="space-y-2 pt-4 border-t border-gray-50">
           <div className="flex items-center gap-2">
             <Target className="w-3 h-3 text-indigo-600" />
-            <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">CLOs</label>
+            <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">CLOs/Learning Outcomes</label>
           </div>
           <div className="space-y-1">
             {data.learningOutcomes.filter(o => o.trim()).length > 0 ? (
