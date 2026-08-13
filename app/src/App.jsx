@@ -728,18 +728,19 @@ const App = () => {
 
               <div className="space-y-4">
                 <p className="text-sm font-bold text-gray-700">Select verification strategy:</p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 gap-3">
                   {[
-                    { id: 'Proctoring', title: 'Supervised Work' },
-                    { id: 'Validation (Oral/Viva)', title: 'Present/Defend the Work' },
-                    { id: 'Documentation', title: 'Document the Process' }
+                    { id: 'Proctoring', title: 'Supervised Work', desc: 'Students perform the assessment on-site with direct supervision.' },
+                    { id: 'Validation (Oral/Viva)', title: 'Present/Defend the Work', desc: 'Students defend their work to verify authorship.' },
+                    { id: 'Documentation', title: 'Document the Process', desc: 'Students submit documentary evidence of their work process.' }
                   ].map(strategy => (
-                    <button 
+                    <button
                       key={strategy.id}
                       onClick={() => updateData('humanCompetencyStrategy', strategy.id)}
-                      className={`p-3 rounded-xl border-2 text-center transition-all ${data.humanCompetencyStrategy === strategy.id ? `border-${themeStep7.accent}-600 bg-${themeStep7.accent}-50 text-${themeStep7.accent}-700 shadow-sm` : 'border-gray-100 bg-white hover:border-gray-200 text-gray-500'}`}
+                      className={`p-4 rounded-xl border-2 text-left transition-all flex flex-col gap-1 ${data.humanCompetencyStrategy === strategy.id ? `border-${themeStep7.accent}-600 bg-${themeStep7.accent}-50 shadow-sm` : 'border-gray-100 bg-white hover:border-gray-200'}`}
                     >
-                      <span className="text-sm font-bold">{strategy.title}</span>
+                      <span className={`text-sm font-bold ${data.humanCompetencyStrategy === strategy.id ? `text-${themeStep7.accent}-700` : 'text-gray-700'}`}>{strategy.title}</span>
+                      <span className="text-sm text-gray-500">{strategy.desc}</span>
                     </button>
                   ))}
                 </div>
