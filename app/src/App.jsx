@@ -259,6 +259,12 @@ const App = () => {
     return `${otherItems.join(", ")} and ${lastItem}`;
   };
 
+  const endWithPeriod = (text) => {
+    const trimmed = (text || '').trim();
+    if (!trimmed) return trimmed;
+    return /[.!?]$/.test(trimmed) ? trimmed : `${trimmed}.`;
+  };
+
   const toggleAiLiteracySkill = (skillId) => {
     setData((prev) => {
       const isSelected = prev.aiLiteracySkills.includes(skillId);
@@ -453,8 +459,8 @@ const App = () => {
               <div className="grid grid-cols-1 gap-4">
                 {[
                   { id: 'Proctoring', title: 'Supervised Work', desc: 'Students perform the assessment on-site with direct supervision.' },
-                  { id: 'Validation (Oral/Viva)', title: 'Present/defend', desc: 'Students defend their work to verify authorship.' },
-                  { id: 'Documentation', title: 'Document the process', desc: 'Students submit documentary evidence of their work process.' }
+                  { id: 'Validation (Oral/Viva)', title: 'Oral Defense', desc: 'Students defend their work to verify authorship.' },
+                  { id: 'Documentation', title: 'Process Documentation', desc: 'Students submit documentary evidence of their work process.' }
                 ].map(strategy => (
                   <button 
                     key={strategy.id}
@@ -494,7 +500,7 @@ const App = () => {
                   <Users className={`w-6 h-6 ${data.integratedSubtype === 'Collaborator' ? 'text-emerald-600' : 'text-gray-400'}`} />
                   <div>
                     <h4 className="font-bold text-gray-900">AI as Collaborator</h4>
-                    <p className="text-sm text-gray-500 mt-2 leading-relaxed">AI is weaved into the professional workflow of performing job-critical tasks.</p>
+                    <p className="text-sm text-gray-500 mt-2 leading-relaxed">AI is woven into the professional workflow of performing job-critical tasks.</p>
                   </div>
                 </button>
               </div>
@@ -558,7 +564,7 @@ const App = () => {
                     <p className="text-sm font-bold text-emerald-900">{integrationTypeLabel}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-black uppercase tracking-widest text-emerald-700">Specific Focus Of This Integration</p>
+                    <p className="text-xs font-black uppercase tracking-widest text-emerald-700">Specific Focus of This Integration</p>
                     <p className="text-sm text-emerald-900 whitespace-pre-wrap break-words">
                       {data.integrationFocus?.trim() || 'No specific focus entered yet.'}
                     </p>
@@ -668,8 +674,8 @@ const App = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   {[
                     { id: 'Proctoring', title: 'Supervised Work' },
-                    { id: 'Validation (Oral/Viva)', title: 'Present/defend' },
-                    { id: 'Documentation', title: 'Document the process' }
+                    { id: 'Validation (Oral/Viva)', title: 'Oral Defense' },
+                    { id: 'Documentation', title: 'Process Documentation' }
                   ].map(strategy => (
                     <button 
                       key={strategy.id}
@@ -750,10 +756,10 @@ const App = () => {
                   </div>
 
                   <div className="space-y-2 pt-2">
-                    <p className="text-sm font-bold text-gray-700">Explain what pre-AI skills are developed, and how</p>
+                    <p className="text-sm font-bold text-gray-700">Explain what pre-AI skills are developed and how</p>
                     <textarea
                       className="w-full h-28 p-3 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-rose-100"
-                      placeholder="ex. In this assessment, learners are asked to give several ways to answer the same problem- this builds critical thinking that can lead to the AI literacy skill of AI output evaluation."
+                      placeholder="ex. In this assessment, learners are asked to give several ways to answer the same problem — this builds critical thinking that can lead to the AI literacy skill of AI output evaluation."
                       value={data.preAiSkillsExplanation}
                       onChange={(e) => updateData('preAiSkillsExplanation', e.target.value)}
                     />
@@ -774,7 +780,7 @@ const App = () => {
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10">
             <div className="space-y-2">
               <label className="text-xs font-bold text-indigo-600 uppercase tracking-widest">Step 8: AI Literacy Skills</label>
-              <h3 className="text-2xl font-bold text-gray-900">Tick Relevant DEC AI Literacy Skills</h3>
+              <h3 className="text-2xl font-bold text-gray-900">Check Relevant DEC AI Literacy Skills</h3>
               <p className="text-sm text-gray-500">Check all AI literacy skills assessed in this AI-Assisted or AI-Integrated assessment.</p>
             </div>
 
@@ -803,7 +809,7 @@ const App = () => {
 
             <div className="space-y-2 pt-4 border-t border-gray-100">
               <p className="text-sm font-bold text-gray-700">Strategy for Critical Engagement</p>
-              <p className="text-sm text-gray-500">describe how AI literacy skills will be practiced here</p>
+              <p className="text-sm text-gray-500">Describe how AI literacy skills will be practiced here.</p>
               <textarea
                 className="w-full h-24 p-3 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-100"
                 placeholder="How will students demonstrate critical engagement while practicing the selected AI literacy skills?"
@@ -824,14 +830,14 @@ const App = () => {
         
         const getPolicyText = () => {
           if (data.assessmentType === 'AI-Free') {
-            return `This is an AI-FREE ASSESSMENT. The use of AI is prohibited. It is critical that you are able to do this unaided by AI, since this provides evidence of the following Course Learning Outcomes: ${outcomesList || '[CLOs]'}.\n\nTo ensure your personal performance: ${data.integrityProvisions || '[Implementation details]'}`;
+            return `This is an AI-FREE ASSESSMENT. The use of AI is prohibited. It is critical that you are able to do this unaided by AI, since this provides evidence of the following Course Learning Outcomes: ${outcomesList || '[CLOs]'}.\n\nTo ensure your personal performance: ${endWithPeriod(data.integrityProvisions || '[Implementation details]')}`;
           }
           if (data.assessmentType === 'AI-Assisted') {
             const tasksString = formatListWithAnd(auxiliaryTasks);
             const coreTasksNames = formatListWithAnd(essentialTasks);
-            return `This is an AI-ASSISTED ASSESSMENT. You are allowed to use AI to: ${tasksString || '[tasks]'}. However, the use of AI is strictly prohibited for the following core tasks: ${coreTasksNames || '[tasks]'}.\n\nYour independent performance of these core tasks will be verified as follows: ${data.integrityProvisions || '[Implementation details]'}. ${data.criticalEngagement ? `\n\nYou are also expected to demonstrate critical engagement with AI outputs: ${data.criticalEngagement}` : ''}`;
+            return `This is an AI-ASSISTED ASSESSMENT. You are allowed to use AI for the following tasks: ${tasksString || '[tasks]'}. However, the use of AI is strictly prohibited for the following core tasks: ${coreTasksNames || '[tasks]'}.\n\nYour independent performance of these core tasks will be verified as follows: ${endWithPeriod(data.integrityProvisions || '[Implementation details]')}${data.criticalEngagement ? `\n\nYou are also expected to demonstrate critical engagement with AI outputs: ${data.criticalEngagement}` : ''}`;
           }
-          return `This is an AI-INTEGRATED ASSESSMENT. AI use is expected. To demonstrate Course Learning Outcomes, you must provide the following accountability evidence: ${data.submissionRequirements}. \n\nTo ensure critical engagement with AI: ${data.integrityProvisions}. ${data.criticalEngagement ? `\n\nRequirement for critical engagement: ${data.criticalEngagement}` : ''}`;
+          return `This is an AI-INTEGRATED ASSESSMENT. AI use is expected. To demonstrate Course Learning Outcomes, you must provide the following accountability evidence: ${endWithPeriod(data.submissionRequirements || '[Accountability evidence]')}\n\nTo ensure critical engagement with AI: ${endWithPeriod(data.integrityProvisions || '[Implementation details]')}${data.criticalEngagement ? `\n\nRequirement for critical engagement: ${data.criticalEngagement}` : ''}`;
         };
 
         return (
@@ -882,7 +888,7 @@ const App = () => {
                     </ul>
                   </div>
                   <div className={`p-5 rounded-2xl border-2 ${theme.border} bg-white`}>
-                    <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Tasks Breakdown</p>
+                    <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Task Breakdown</p>
                     <ul className="space-y-2">
                       {data.assessmentType === 'AI-Integrated'
                         ? redesignedTasksForBlueprint.map((item, i) => (
