@@ -361,7 +361,8 @@ const App = () => {
             <div className="space-y-2">
               <label className="text-xs font-bold text-indigo-600 uppercase tracking-widest">Step 4</label>
               <h3 className="text-2xl font-bold text-gray-900">Task Breakdown</h3>
-              <p className="text-sm text-gray-500">List the tasks required to complete the assessment.</p>
+              <p className="text-sm text-gray-500">Identify the sub-set tasks a student performs to complete the assessment.</p>
+              <p className="text-xs text-gray-400 italic">ex. Reflection Essay — 1. Brainstorm an idea based on questions, 2. Create an outline, 3. Write a draft, 4. Submit the draft, 5. Review feedback, 6. Rewrite.</p>
             </div>
             <div className="space-y-3">
               {data.tasks.map((task, index) => (
@@ -416,16 +417,19 @@ const App = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
-                { 
+                {
                   id: 'AI-Free', icon: <ShieldAlert className="w-6 h-6" />, title: 'AI-Free', guide: "Do students apply the intended outcomes in all these tasks?",
+                  detail: "If yes, all tasks will need to be performed by students unaided by AI.",
                   color: 'border-rose-200 hover:border-rose-400 bg-rose-50/50', activeColor: 'border-rose-600 bg-rose-600 text-white'
                 },
-                { 
+                {
                   id: 'AI-Assisted', icon: <Zap className="w-6 h-6" />, title: 'AI-Assisted', guide: "Do students apply the intended outcomes in some tasks but not all?",
+                  detail: "Look for tasks that lead to the product but where students don't directly apply the learning outcomes — these \"adjacent tasks\" are where AI use can be permitted.",
                   color: 'border-amber-200 hover:border-amber-400 bg-amber-50/50', activeColor: 'border-amber-600 bg-amber-600 text-white'
                 },
-                { 
+                {
                   id: 'AI-Integrated', icon: <BrainCircuit className="w-6 h-6" />, title: 'AI-Integrated', guide: "Is AI already integrated in the professional field or authentic situations where the learning outcomes are applied?",
+                  detail: "In real, non-academic situations, is AI already part of how these tasks get done — has it changed the way professionals perform them?",
                   color: 'border-emerald-200 hover:border-emerald-400 bg-emerald-50/50', activeColor: 'border-emerald-600 bg-emerald-600 text-white'
                 }
               ].map((p) => (
@@ -437,6 +441,7 @@ const App = () => {
                   <div className="mb-4">{p.icon}</div>
                   <h4 className="font-bold text-base mb-2">{p.title}</h4>
                   <p className="text-sm leading-relaxed font-medium opacity-90">{p.guide}</p>
+                  <p className="text-xs leading-relaxed mt-2 opacity-75">{p.detail}</p>
                 </button>
               ))}
             </div>
@@ -459,8 +464,8 @@ const App = () => {
               <div className="grid grid-cols-1 gap-4">
                 {[
                   { id: 'Proctoring', title: 'Supervised Work', desc: 'Students perform the assessment on-site with direct supervision.' },
-                  { id: 'Validation (Oral/Viva)', title: 'Oral Defense', desc: 'Students defend their work to verify authorship.' },
-                  { id: 'Documentation', title: 'Process Documentation', desc: 'Students submit documentary evidence of their work process.' }
+                  { id: 'Validation (Oral/Viva)', title: 'Present/Defend the Work', desc: 'Students defend their work to verify authorship.' },
+                  { id: 'Documentation', title: 'Document the Process', desc: 'Students submit documentary evidence of their work process.' }
                 ].map(strategy => (
                   <button 
                     key={strategy.id}
@@ -674,8 +679,8 @@ const App = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   {[
                     { id: 'Proctoring', title: 'Supervised Work' },
-                    { id: 'Validation (Oral/Viva)', title: 'Oral Defense' },
-                    { id: 'Documentation', title: 'Process Documentation' }
+                    { id: 'Validation (Oral/Viva)', title: 'Present/Defend the Work' },
+                    { id: 'Documentation', title: 'Document the Process' }
                   ].map(strategy => (
                     <button 
                       key={strategy.id}
@@ -729,7 +734,17 @@ const App = () => {
               {data.preAiSkillsDeveloped === 'yes' && (
                 <div className="space-y-6 pt-4 border-t border-gray-100 animate-in fade-in slide-in-from-top-4 duration-500">
                   <div className="space-y-2">
-                    <p className="text-sm font-bold text-gray-700">Which AI literacy skills do you think this assessment helps develop?</p>
+                    <p className="text-sm font-bold text-gray-700">Explain what pre-AI skills are developed and how</p>
+                    <textarea
+                      className="w-full h-28 p-3 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-rose-100"
+                      placeholder="ex. In this assessment, learners are asked to give several ways to answer the same problem — this builds critical thinking that can lead to the AI literacy skill of AI output evaluation."
+                      value={data.preAiSkillsExplanation}
+                      onChange={(e) => updateData('preAiSkillsExplanation', e.target.value)}
+                    />
+                  </div>
+
+                  <div className="space-y-2 pt-2">
+                    <p className="text-sm font-bold text-gray-700">Which AI literacy skills do these help develop?</p>
                     <p className="text-sm text-gray-500">Check all that apply.</p>
                   </div>
                   <div className="grid grid-cols-1 gap-3">
@@ -753,16 +768,6 @@ const App = () => {
                         </label>
                       );
                     })}
-                  </div>
-
-                  <div className="space-y-2 pt-2">
-                    <p className="text-sm font-bold text-gray-700">Explain what pre-AI skills are developed and how</p>
-                    <textarea
-                      className="w-full h-28 p-3 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-rose-100"
-                      placeholder="ex. In this assessment, learners are asked to give several ways to answer the same problem — this builds critical thinking that can lead to the AI literacy skill of AI output evaluation."
-                      value={data.preAiSkillsExplanation}
-                      onChange={(e) => updateData('preAiSkillsExplanation', e.target.value)}
-                    />
                   </div>
                 </div>
               )}
