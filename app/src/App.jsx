@@ -106,6 +106,11 @@ const App = () => {
   });
 
   const blueprintRef = useRef(null);
+  const mainRef = useRef(null);
+
+  useEffect(() => {
+    mainRef.current?.scrollTo(0, 0);
+  }, [step]);
 
   const updateData = (field, value) => {
     setData(prev => ({ ...prev, [field]: value }));
@@ -1097,7 +1102,7 @@ const App = () => {
     (step === 8 && data.assessmentType === 'AI-Free' && data.preAiSkillsDeveloped === 'yes' && data.preAiLiteracySkills.length === 0);
 
   return (
-    <div className="min-h-screen bg-[#FBFBFD] text-[#1D1D1F] font-sans flex flex-col">
+    <div className="h-dvh bg-[#FBFBFD] text-[#1D1D1F] font-sans flex flex-col">
       <nav className="h-16 border-b border-gray-200 bg-white sticky top-0 z-50 px-3 sm:px-6 flex items-center justify-between w-full shadow-sm gap-3">
         <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
           <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 hover:bg-gray-50 rounded-lg text-gray-400 transition-colors flex-shrink-0">
@@ -1124,7 +1129,7 @@ const App = () => {
         />
       )}
 
-      <div className="flex flex-1 overflow-hidden relative">
+      <div className="flex flex-1 min-h-0 overflow-hidden relative">
         <aside className={`lg:hidden fixed top-16 bottom-0 left-0 z-40 w-80 max-w-[85vw] bg-white border-r border-gray-100 transition-transform duration-300 ease-in-out flex flex-col ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
           {renderSidebarContent()}
         </aside>
@@ -1133,7 +1138,7 @@ const App = () => {
           {renderSidebarContent()}
         </aside>
 
-        <main className="flex-1 overflow-y-auto bg-gray-50/30">
+        <main ref={mainRef} className="flex-1 overflow-y-auto bg-gray-50/30">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
             <div className="min-h-[450px]">{renderStepContent()}</div>
             {step < 9 && (
