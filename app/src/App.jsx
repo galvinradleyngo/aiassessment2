@@ -727,7 +727,7 @@ const App = () => {
               )}
 
               <div className="space-y-4">
-                <p className="text-sm font-bold text-gray-700">Select verification strategy:</p>
+                <p className="text-sm font-bold text-gray-700">Select verification strategy for human only tasks:</p>
                 <div className="grid grid-cols-1 gap-3">
                   {[
                     { id: 'Proctoring', title: 'Supervised Work', desc: 'Students perform the assessment on-site with direct supervision.' },
